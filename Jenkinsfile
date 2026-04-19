@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        CI = 'true'
-        NODE_ENV = 'production'
-    }
-
     stages {
 
         stage('Checkout') {
@@ -16,33 +11,30 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install --no-audit --no-fund'
+                sh 'npm install'
             }
         }
 
-        stage('Verify Node') {
+        stage('Start App with PM2') {
             steps {
-                sh 'node -v'
-                sh 'npm -v'
+                sh '''
+                pm2 delete express-hello-world || true
+                pm2 start index.js --name express-hello-world
+                pm2 save
+                '''
             }
         }
 
-        stage('Test Run (CI Safe)') {
+        stage('Verify App') {
             steps {
-                sh 'node index.js'
+                sh 'pm2 list'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build SUCCESS'
-        }
-        failure {
-            echo '❌ Build FAILED'
-        }
-        always {
-            echo '📦 Pipeline finished'
+            echo '✅ App deployed and running with PM2'
         }
     }
 }
