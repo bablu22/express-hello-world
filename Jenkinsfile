@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/bablu22/express-hello-world.git'
+                git url:'https://github.com/bablu22/express-hello-world.git', branch: 'main'
             }
         }
 
