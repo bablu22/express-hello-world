@@ -14,9 +14,9 @@ pipeline {
             }
         }
 
-        stage('Run App') {
+        stage('Test Run') {
             steps {
-                sh 'npm start'
+                sh 'node index.js'
             }
         }
     }
